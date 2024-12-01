@@ -13,6 +13,9 @@ int main()
 	std::cout << "Enter drone's max capacity: ";
 	std::cin >> capacity;
 
+	std::cout << "Enter maximum number of drones allowed: ";
+	std::cin >> Drone::max_drones;
+
 	Drone drone(startX, startY, capacity); // Create the initial drone
 
 	std::cout << "Enter number of bases: ";
@@ -27,9 +30,9 @@ int main()
 		bases.emplace_back(x, y, weight, time_limit);
 	}
 
-	// Sort bases by time limit first, then by distance to ensure timely delivery
+	// Sort bases by time limit and distance
 	std::sort(bases.begin(), bases.end(), [&drone](Base &a, Base &b)
-						{
+			  {
         if (a.time_limit == b.time_limit) {
             return a.distance_from(drone.x, drone.y) < b.distance_from(drone.x, drone.y);
         }
@@ -39,21 +42,16 @@ int main()
 	{
 		if (base.weight_required > 0)
 		{
-			Drone::make_multiple_trips(base); // Dispatch drones for delivery
+			Drone::make_multiple_trips(base);
 		}
 	}
 
-	// Output total time taken
 	int total_time = 0;
 	for (auto &drone : Drone::all_drones)
 	{
 		total_time += drone.total_time;
 	}
 	std::cout << "\nTotal time for deliveries: " << total_time << " seconds.\n";
+
 	return 0;
 }
-
-// ---------for compile--------------------------------
-// g++ Main.cpp Drone.cpp Base.cpp -o drone_delivery
-// ------for run--------------------------------
-// .\drone_delivery.exe
